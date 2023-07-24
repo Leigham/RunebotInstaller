@@ -35,6 +35,8 @@ jobs:
       - name: Extract Version from build.gradle.kts
         id: extract-version
         run: echo "version=\$(grep '^version = ' build.gradle.kts | sed 's/version = \"\\(.*\\)\"/\\1/')" >> $GITHUB_ENV
+      - name: show result of last step
+        run: echo $version
 
   release:
     needs: build
