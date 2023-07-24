@@ -74,9 +74,7 @@ jobs:
         with:
           files: build/libs/*.*
           tag_name: ${{ steps.tag.outputs.tag }}
-      - name: Discord notification
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
+      - name: Run Discord Webhook
+        uses: johnnyhuy/actions-discord-git-webhook@main
         with:
-          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
