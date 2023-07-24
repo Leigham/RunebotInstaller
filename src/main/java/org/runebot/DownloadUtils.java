@@ -24,7 +24,7 @@ public class DownloadUtils {
                 while ((bytesRead = in.read(buffer)) != -1) {
                     out.write(buffer, 0, bytesRead);
                     totalBytesRead += bytesRead;
-                    loadingWindow.setProgress((int) ((totalBytesRead * 100) / contentLength));
+                    loadingWindow.setProgress(((totalBytesRead * 100) / contentLength));
                     loadingWindow.setStatusText("Downloading RuneBot Plugin: " + (totalBytesRead * 100) / contentLength + "%");
                     // Update progress here if needed
                     // For example, you can calculate the percentage of completion based on totalBytesRead and contentLength
