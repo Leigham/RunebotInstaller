@@ -122,7 +122,7 @@ public class Main {
             throw new RuntimeException(ex);
         }
         return "";
-    };
+    }
     private static String getLatestVersionURL(String latestversion) {
         return String.format("https://github.com/KALE1111/rblaunch/releases/download/v%s/RuneBot-%s.jar", latestversion,latestversion);
     }
