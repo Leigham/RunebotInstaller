@@ -32,9 +32,9 @@ jobs:
         id: gradle-build
         run: ./gradlew build --no-daemon
 
-      - name: Output Application Version
-        # Use the output from the `gradle-build` step
-        run: echo "application-version=${{ steps.gradle-build.outputs.application-version }}"
+      - name: Extract Version from build.gradle.kts
+        id: extract-version
+        run: echo "version=\$(grep '^version = ' build.gradle.kts | sed 's/version = \"\\(.*\\)\"/\\1/')" >> $GITHUB_ENV
 
   release:
     needs: build
