@@ -2,12 +2,8 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
-    tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -17,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
@@ -28,21 +24,23 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
-        id: gradle-build
-        run: ./gradlew build --no-daemon
-
       - name: Extract Version from build.gradle.kts
         id: extract-version
         run: echo "version=\$(grep '^version = ' build.gradle.kts | sed 's/version = \"\\(.*\\)\"/\\1/')" >> $GITHUB_ENV
+
       - name: Output Application Version
-        run: echo "version  $version"
+        run: echo "version $version"
+
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon
 
   create-tag:
     needs: build
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Extract Version from build.gradle.kts
         id: extract-version
         run: echo "version=\$(grep '^version = ' build.gradle.kts | sed 's/version = \"\\(.*\\)\"/\\1/')" >> $GITHUB_ENV
@@ -50,20 +48,3 @@ jobs:
         run: git tag ${{ env.version }}
       - name: Push Tag to Remote Repository
         run: git push origin ${{ env.version }}
-
-  release:
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: build/libs/*
-          tag_name: ${{ github.ref }}
-          body: ${{ github.event.release.body }}
-          draft: false
-          prerelease: false
