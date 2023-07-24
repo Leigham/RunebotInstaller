@@ -32,6 +32,12 @@ jobs:
         run: ./gradlew build --no-daemon
       - name: List build/libs contents
         run: ls -R build/libs
+
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+         name: build-artifacts
+         path: build/libs/
   create-tag:
     needs: build
     if: ${{ success() }}
