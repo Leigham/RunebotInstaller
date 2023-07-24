@@ -44,10 +44,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref.split('/')[2] }} # Extract the tag name without the 'refs/' prefix
-          release_name: Release ${{ github.ref.split('/')[2] }} # Use the same tag name as the release name
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           body: |
-            Release ${{ github.ref.split('/')[2] }}
+            Release ${{ github.ref }}
           draft: false
           prerelease: false
 
