@@ -40,6 +40,7 @@ jobs:
     needs: build
     if: ${{ success() }}
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Create Release
         id: create_release
