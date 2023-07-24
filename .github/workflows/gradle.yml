@@ -74,7 +74,15 @@ jobs:
         with:
           files: build/libs/*.*
           tag_name: ${{ steps.tag.outputs.tag }}
-      - name: Run Discord Webhook
-        uses: johnnyhuy/actions-discord-git-webhook@main
+      - uses: sarisia/actions-status-discord@v1
+        if: always()
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          title: "version ${{ steps.tag.outputs.tag }}"
+          description: "Runebot has been updated!"
+          image: ${{ https://cdn.discordapp.com/attachments/971169239127965726/1123095605271613511/sheepbanner.gif }}
+          color: 0x0000ff
+          url: "https://github.com/Leigham/RunebotInstaller/releases/latest"
+          username: "Runebot Releases"
+          avatar_url: ${{ https://cdn.discordapp.com/attachments/971169239127965726/1123095576372838561/rbactual.gif }}
