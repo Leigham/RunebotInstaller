@@ -46,10 +46,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # if you don't want to set write permissions use a PAT token
           WITH_V: true
           PRERELEASE: true
-      - name: List build/libs contents
-        run: ls -R build/libs
+      - name: List ./build/libs contents
+        run: ls -R ./build/libs
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/libs/*.*
+          files: ./build/libs/*.*
           tag_name: ${{ steps.tag.outputs.tag }}
