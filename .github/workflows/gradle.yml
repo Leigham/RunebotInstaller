@@ -41,15 +41,25 @@ jobs:
         uses: actions/checkout@v3
       - name: Bump version and push tag
         id: tag
-        uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
+        uses: anothrNick/github-tag-action@1.64.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # if you don't want to set write permissions use a PAT token
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           WITH_V: true
           PRERELEASE: true
-      - name: List ./build/libs contents
-        run: ls -R ./build/libs
+
+      - name: list the current directory
+        run: ls -R
+
+      - name: Check if build/libs exists
+        run: |
+          if [ -d "./build/libs" ]; then
+            ls -R ./build/libs
+          else
+            echo "Directory 'build/libs' not found."
+            exit 1
+          fi
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./build/libs/*.*
+          files: build/libs/*.*
           tag_name: ${{ steps.tag.outputs.tag }}
