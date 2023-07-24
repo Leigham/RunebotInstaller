@@ -46,3 +46,9 @@ jobs:
           uses: actions/checkout@v3
         - name: Release
           uses: softprops/action-gh-release@v1
+          with :
+            files: build/libs/*
+            tag_name: ${{ github.ref }}
+            body: ${{ github.event.release.body }}
+            draft: false
+            prerelease: false
