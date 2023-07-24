@@ -30,7 +30,8 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build --no-daemon
-
+      - name: List build/libs contents
+        run: ls -R build/libs
   create-tag:
     needs: build
     if: ${{ success() }}
@@ -45,6 +46,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # if you don't want to set write permissions use a PAT token
           WITH_V: true
           PRERELEASE: true
+      - name: List build/libs contents
+        run: ls -R build/libs
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
