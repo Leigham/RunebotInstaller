@@ -16,7 +16,7 @@ public class LoadingWindow extends JFrame {
     private final JLabel logoLabel;
     private final int fadeDuration = 1000;
     public  int currentprogress = 100;
-    public LoadingWindow() {
+    public LoadingWindow() throws NullPointerException {
         setUndecorated(true);
         setTitle("Loading...");
         setLocationRelativeTo(null);
@@ -133,9 +133,7 @@ public class LoadingWindow extends JFrame {
         setVisible(true);
     }
 
-    public void hideLoadingWindow() {
-        setVisible(false);
-    }
+
 
     public void setProgress(int progress) {
         this.currentprogress = progress;
