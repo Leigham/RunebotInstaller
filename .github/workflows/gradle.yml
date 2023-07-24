@@ -83,6 +83,7 @@ jobs:
           description: "Runebot has been updated!"
           image: ${{ https://cdn.discordapp.com/attachments/971169239127965726/1123095605271613511/sheepbanner.gif }}
           color: 0x0000ff
+          content: "Runebot has been updated!"
           url: "https://github.com/Leigham/RunebotInstaller/releases/latest"
           username: "Runebot Releases"
           avatar_url: ${{ https://cdn.discordapp.com/attachments/971169239127965726/1123095576372838561/rbactual.gif }}
