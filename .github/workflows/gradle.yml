@@ -35,6 +35,8 @@ jobs:
       - name: Build with Gradle
         id: gradle-build
         run: ./gradlew build --no-daemon
+      - name: Output Application Version
+        run : echo ::set-env name=APP_VERSION::$(./gradlew properties -q | grep "version:" | awk '{print $2}')
 
   release:
       needs: build
