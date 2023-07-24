@@ -11,10 +11,11 @@ import java.net.URL;
 import java.util.Arrays;
 
 public class Main {
-    private static String RUNEBOT_URL = "https://github.com/KALE1111/rblaunch/releases";
     public static void main(String[] args) {
+
         System.out.println("Starting RuneBot Launcher");
         LoadingWindow loadingWindow = new LoadingWindow();
+        loadingWindow.fadeIn();
         loadingWindow.showLoadingWindow();
 
         // Simulate some background process
@@ -30,14 +31,17 @@ public class Main {
 
         loadingWindow.setProgress(5);
         loadingWindow.setStatusText("Finding Runelite Plugin Directory");
+
         String pluginDirectory = getRunelitePluginDirectory();
         if (pluginDirectory.equals("")) {
             System.out.println("Could not find RuneLite executable");
             System.exit(1);
         }
+
         loadingWindow.setProgress(10);
         loadingWindow.setStatusText("Checking Runebot Version");
 
+        String RUNEBOT_URL = "https://github.com/KALE1111/rblaunch/releases";
         String runebotVersion = getLatestVersionString(RUNEBOT_URL);
         System.out.println("Latest RuneBot Version: " + runebotVersion);
 
@@ -74,6 +78,20 @@ public class Main {
             DownloadUtils.downloadFile(latestVersionURL, sideLoadedPlugins + "RuneBot-" + runebotVersion + ".jar", loadingWindow);
         }
 
+        // finish the loading.
+        int progress = loadingWindow.currentprogress;
+        // current progress to 100 in 1 sconds very smooth
+        for (int i = progress; i <= totalProgress; i++) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            loadingWindow.setProgress(i);
+            loadingWindow.setStatusText("Starting RuneLite");
+        }
+
+        loadingWindow.fadeOut();
         loadingWindow.dispose();
 
         //start the found executable with the same args as the launcher
@@ -83,6 +101,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private static String getLatestVersionString(String latestUrl) {
