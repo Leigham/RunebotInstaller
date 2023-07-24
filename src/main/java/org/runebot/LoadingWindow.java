@@ -10,10 +10,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 
 public class LoadingWindow extends JFrame {
     private final JProgressBar progressBar;
-    private final JLabel logoLabel;
     private final int fadeDuration = 1000;
     public  int currentprogress = 100;
     public LoadingWindow() throws NullPointerException {
@@ -25,19 +25,20 @@ public class LoadingWindow extends JFrame {
 
         BufferedImage originalImage = null;
         try {
-            originalImage = ImageIO.read(getClass().getResource("/rbactual.gif"));
+            originalImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("/rbactual.gif")));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         // Double the size of the image
+        assert originalImage != null;
         int newWidth = originalImage.getWidth() * 2;
         int newHeight = originalImage.getHeight() * 2;
         Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
 
         // Update the ImageIcon with the new scaled Image
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
-        logoLabel = new JLabel(scaledIcon, JLabel.CENTER);
+        JLabel logoLabel = new JLabel(scaledIcon, JLabel.CENTER);
 
         add(logoLabel, BorderLayout.NORTH);
 
