@@ -42,15 +42,7 @@ jobs:
       runs-on: ubuntu-latest
       permissions: write-all
       steps:
-        - name: Create Release
-          id: create_release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         - name: Checkout
           uses: actions/checkout@v3
-          with :
-            ref : ${{ github.ref }}
-            tag_name : ${{ steps.create_release.outputs.tag_name }}
         - name: Release
           uses: softprops/action-gh-release@v1
