@@ -25,6 +25,9 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
 
+      - name: Ensure directory exists
+        run: mkdir -p build/libs
+
       - name: Build with Gradle
         run: ./gradlew buildJars > build/libs/gradle_build_output.txt
 
