@@ -33,9 +33,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew buildJars > gradle_build_output.txt
 
-      - name: wait for 1 min
-        run: sleep 1m
-
       - name: Extract Version
         run: |
           version=$(grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' gradle_build_output.txt | head -n 1)
