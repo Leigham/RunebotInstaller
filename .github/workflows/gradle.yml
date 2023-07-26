@@ -28,7 +28,7 @@ jobs:
 
       - name: Get version from gradle
         id: version
-        run: echo ::set-output name=version::$(./gradlew -q version)
+        run: echo ./gradlew version --no-daemon
 
       - name: Build with Gradle
         run: ./gradlew buildJars --no-daemon
