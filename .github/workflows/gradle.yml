@@ -32,10 +32,11 @@ jobs:
           ./gradlew build > gradle_build_output.txt
 
       - name: Extract Version
-        run: |
-        # Use grep and awk to extract the line containing "v1.0.0" from the Gradle output
-          version=$(grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' gradle_build_output.txt | awk 'NR==1{print}')
-          echo "The version is: $version"
+        run: version=$(grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' gradle_build_output.txt | awk 'NR==1{print}')
+
+      - name: output version
+        id: version
+        run: echo "::set-output name=version::$version"
 
       - name: List build/libs contents
         run: ls -R build/libs
