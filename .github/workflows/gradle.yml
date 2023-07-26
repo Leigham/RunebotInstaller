@@ -29,11 +29,11 @@ jobs:
         run: mkdir -p build/libs
 
       - name: Build with Gradle
-        run: ./gradlew buildJars > build/libs/gradle_build_output.txt
+        run: ./gradlew buildJars > gradle_build_output.txt
 
       - name: Extract Version
         run: |
-          version=$(grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' build/libs/gradle_build_output.txt | head -n 1)
+          version=$(grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' gradle_build_output.txt | head -n 1)
           echo "The version is: $version"
 
       - name: Save Version as Artifact
@@ -48,6 +48,11 @@ jobs:
          name: build-artifacts
          path: build/libs/
 
+      - name: Archive Logs
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: gradle_build_output.txt
   create-git-tag:
       needs: build
       if: ${{ success() }}
@@ -70,6 +75,11 @@ jobs:
         with:
           name: build-artifacts
           path: build/libs/
+      - name: Download logs
+        uses: actions/download-artifact@v2
+        with:
+            name: logs
+            path: gradle_build_output.txt
       - name: Bump version and push tag
         id: tag
         uses: anothrNick/github-tag-action@1.64.0
@@ -92,7 +102,10 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/libs/*.*
+          # we want build/libs/*.* to be released and the logs file
+          files: |
+            build/libs/*
+            gradle_build_output.txt
           tag_name: ${{ steps.tag.outputs.tag }}
       - uses: sarisia/actions-status-discord@v1
         if: always()
