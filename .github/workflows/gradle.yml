@@ -46,9 +46,9 @@ jobs:
       if: ${{ success() }}
       runs-on: ubuntu-latest
       steps:
-        -name: get version from previous step
-        id: version
-        run : echo ${{outputs.version.name}}
+        - name: get version from previous step
+          id: version
+          run : echo ${{outputs.version.name}}
 
   create-tag:
     needs: build
