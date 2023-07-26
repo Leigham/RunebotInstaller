@@ -31,7 +31,7 @@ jobs:
 
       - name : Retrieve Version
         run: |
-          echo "{name}={$(./gradlew -q version)}" >> $GITHUB_OUTPUT
+          echo "{name}={$(./gradlew version)}" >> $GITHUB_OUTPUT
         id : version
 
       - name : echo the output of the version
