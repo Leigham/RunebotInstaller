@@ -38,7 +38,7 @@ jobs:
         run: ls -R build/libs
 
       - name: Archive build artifacts
-        uses: actions/upload-artifact
+        uses: actions/upload-artifact@v3
         with:
          name: build-artifacts
          path: build/libs/
