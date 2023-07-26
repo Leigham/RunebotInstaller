@@ -10,22 +10,6 @@ permissions:
 
 
 jobs:
-  error :
-    runs-on: ubuntu-latest
-    if: ${{ failure() }}
-    steps:
-      -
-        name: output the error
-        run: echo "Error"
-
-  #we only want to run sucess if the workflow is sucessful
-  success:
-    runs-on: ubuntu-latest
-    if: ${{ success() }}
-    steps:
-      -
-        name: output the success
-        run: echo "Success"
 
 
   build:
@@ -49,9 +33,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew buildJars > gradle_build_output.txt
 
-      - name: Output Gradle Build Logs
-        run: cat gradle_build_output.txt
-
       - name: wait for 1 min
         run: sleep 1m
 
@@ -62,6 +43,8 @@ jobs:
 
       - name : Check if version is empty
         run: |
+          echo "Checking if version is empty"
+          echo "Version is: $version"
           if [ -z "$version" ]; then
             echo "Version is empty"
             exit 1
@@ -154,3 +137,20 @@ jobs:
           url: "https://github.com/Leigham/RunebotInstaller/releases/latest"
           username: "Runebot Releases"
           avatar_url: 'https://cdn.discordapp.com/attachments/971169239127965726/1123095576372838561/rbactual.gif'
+  error :
+    runs-on: ubuntu-latest
+    if: ${{ failure() }}
+    steps:
+      -
+        name: output the error
+        run: echo "Error"
+
+  #we only want to run sucess if the workflow is sucessful
+  success:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ success() }}
+    steps:
+      -
+        name: output the success
+        run: echo "Success"
