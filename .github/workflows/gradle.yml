@@ -49,16 +49,14 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Bump version and push tag
-          id: tag_version
-          uses: mathieudutour/github-tag-action@v6.1
-          with:
-            github_token: ${{ secrets.GH_TOKEN }}
-        - name: Create a GitHub release
-          uses: ncipollo/release-action@v1
-          with:
-            tag: ${{ steps.tag_version.outputs.new_tag }}
-            name: Release ${{ steps.tag_version.outputs.new_tag }}
-            body: ${{ steps.tag_version.outputs.changelog }}
+          id: tag
+          uses: anothrNick/github-tag-action@1.64.0
+          env:
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+            WITH_V: true
+            CUSTOM_TAG: ${{ steps.version.outputs.version }}
+        - name : output the tag
+          run: echo "tag=${{ steps.tag.outputs.tag }}" >> $GITHUB_OUTPUT
   create-tag:
     needs: build
     if: ${{ success() }}
@@ -76,13 +74,7 @@ jobs:
         with:
             name: logs
             path: gradle_build_output.txt
-      - name: Bump version and push tag
-        id: tag
-        uses: anothrNick/github-tag-action@1.64.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          WITH_V: true
-          PRERELEASE: true
+
 
       - name: list the current directory
         run: ls -R
