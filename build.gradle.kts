@@ -1,5 +1,3 @@
-
-
 plugins {
     id("java")
 }
@@ -22,6 +20,31 @@ tasks.jar {
         attributes["Main-Class"] = "org.runebot.Main"
     }
     from(sourceSets.main.get().output)
+}
+// Get the manifest URL of the current JAR file
+
+tasks.register<Jar>("debug") {
+    manifest {
+        attributes["Main-Class"] = "org.runebot.Main"
+        attributes["debug"] = "true"
+    }
+    from(sourceSets.main.get().output)
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    archiveClassifier.set("debug")
+}
+
+tasks.register<Jar>("release") {
+    manifest {
+        attributes["Main-Class"] = "org.runebot.Main"
+        attributes["debug"] = "false"
+    }
+    from(sourceSets.main.get().output)
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    archiveClassifier.set("release")
+}
+
+tasks.register("buildJars") {
+    dependsOn("clean", "debug", "release")
 }
 
 tasks.test {

@@ -3,17 +3,25 @@ package org.runebot;
 import org.jetbrains.annotations.NotNull;
 import org.runebot.enums.OS;
 
-
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 public class Main {
-    public static void main(String[] args) {
-
-        System.out.println("Starting RuneBot Launcher");
+    private static boolean debug = false;
+    public static void main(String[] args) throws IOException {
+        // check if debug mode is enabled
+        final boolean debug = isDebug();
+        if (debug) {
+            System.out.println("Debug mode enabled");
+        }
         LoadingWindow loadingWindow = new LoadingWindow();
         loadingWindow.fadeIn();
         loadingWindow.showLoadingWindow();
@@ -103,7 +111,6 @@ public class Main {
         }
 
     }
-
     private static String getLatestVersionString(String latestUrl) {
         int responseCode = 0;
         try {
@@ -159,5 +166,25 @@ public class Main {
         if (OS.contains("windows")) return "windows";
         return "unsupported";
     }
+
+
+    public static boolean isDebug() {
+        try {
+            // Get the manifest from the current JAR file
+            InputStream input = Main.class.getResourceAsStream("/META-INF/MANIFEST.MF");
+            Manifest manifest = new Manifest(input);
+
+            // Access the main attributes
+            Attributes mainAttributes = manifest.getMainAttributes();
+            String debug = mainAttributes.getValue("debug");
+            if (debug == null) {
+                return true;
+            }
+            return Boolean.parseBoolean(debug);
+        } catch (Exception e) {
+            return true;
+        }
+
+    };
 }
 
