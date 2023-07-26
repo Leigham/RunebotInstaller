@@ -2,8 +2,12 @@ plugins {
     id("java")
 }
 
+
+
+
+val versionArr = intArrayOf(1,0,0);
+version = 'v' + versionArr.joinToString(".")
 group = "org.runebot"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -45,6 +49,12 @@ tasks.register<Jar>("release") {
 
 tasks.register("buildJars") {
     dependsOn("clean", "debug", "release")
+}
+tasks.register("version") {
+// return the version, so can be used in github actions
+    doLast {
+        println(version)
+    }
 }
 
 tasks.test {

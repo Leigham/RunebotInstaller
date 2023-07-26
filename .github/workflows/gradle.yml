@@ -50,6 +50,14 @@ jobs:
         with:
           name: build-artifacts
           path: build/libs/
+
+
+      - name: get version from gradle
+        id: version
+        run: echo ::set-output name=version::$(./gradlew -q version)
+
+      - name: print version
+        run: echo ${{ steps.version.outputs.version }}
       - name: Bump version and push tag
         id: tag
         uses: anothrNick/github-tag-action@1.64.0
