@@ -27,16 +27,16 @@ jobs:
 
 
       - name: Build with Gradle
+        run: ./gradlew build > gradle_build_output.txt
+
+      - name : Retrieve Version
         run: |
-          # Run the Gradle build and store the output in a file
-          ./gradlew build > gradle_build_output.txt
-
-      - name: Extract Version
+          echo "::set-output name=VERSION_NAME::$(${{github.workspace}}/gradlew -q version)"
         id : version
-        run: version=$(grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' gradle_build_output.txt | awk 'NR==1{print}')
 
-      - name: output version to console
+      - name: Check the version output
         run: echo ${{ steps.version.outputs.version }}
+
 
       - name: List build/libs contents
         run: ls -R build/libs
