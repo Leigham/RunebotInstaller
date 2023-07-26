@@ -10,6 +10,24 @@ permissions:
 
 
 jobs:
+  error :
+    runs-on: ubuntu-latest
+    if: ${{ failure() }}
+    steps:
+      -
+        name: output the error
+        run: echo "Error"
+
+  #we only want to run sucess if the workflow is sucessful
+  success:
+    runs-on: ubuntu-latest
+    if: ${{ success() }}
+    steps:
+      -
+        name: output the success
+        run: echo "Success"
+
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -41,6 +59,16 @@ jobs:
         run: |
           version=$(grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' gradle_build_output.txt | head -n 1)
           echo "The version is: $version"
+
+      - name : Check if version is empty
+        run: |
+          if [ -z "$version" ]; then
+            echo "Version is empty"
+            exit 1
+          else
+            echo "Version is not empty"
+          fi
+      
 
       - name: Save Version as Artifact
         run: |
