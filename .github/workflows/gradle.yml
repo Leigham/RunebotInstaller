@@ -48,7 +48,8 @@ jobs:
       steps:
         - name: get version from previous step
           id: version
-          run : echo ${{outputs.version.name}}
+          # get the output from run: build  step id
+          run :  echo ${{ steps.version.outputs.version }}
 
   create-tag:
     needs: build
