@@ -25,19 +25,17 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
 
-
       - name: Build with Gradle
         run: ./gradlew build > gradle_build_output.txt
 
-      - name : Retrieve Version
+      - name: Extract Version
         run: |
-          echo "{name}={$(./gradlew version)}" >> $GITHUB_OUTPUT
-        id : version
+          version=$(grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+' gradle_build_output.txt | head -n 1)
+          echo "The version is: $version"
 
-      - name : echo the output of the version
+      - name: Save Version as Artifact
         run: |
-          echo ${{ steps.version.outputs.version }}
-
+          echo "$version" > version.txt
       - name: List build/libs contents
         run: ls -R build/libs
 
