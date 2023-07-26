@@ -26,17 +26,13 @@ jobs:
         run: chmod +x ./gradlew
 
 
-      - name: Get version from gradle
-        id: version
-        # ./gradlew version --no-daemon and echo the output
-        run: ./gradlew version --no-daemon | grep version | awk '{print $2}' | sed 's/-SNAPSHOT//g'
-      - name: Set version as output
-        # set the output for the step
-        run: echo "::set-output name=version::${{ steps.version.outputs.version }}"
-      - name: show the version
-        run: echo ${{ steps.version.outputs.version }}
       - name: Build with Gradle
+        id : build
         run: ./gradlew buildJars --no-daemon
+
+      - name: echo the output of build
+        run: echo ${{ steps.build.outputs.version }}
+
       - name: List build/libs contents
         run: ls -R build/libs
 

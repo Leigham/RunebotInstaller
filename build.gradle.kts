@@ -5,7 +5,7 @@ plugins {
 
 
 
-val versionArr = intArrayOf(1,0,0);
+val versionArr = intArrayOf(1,0,0)
 version = 'v' + versionArr.joinToString(".")
 group = "org.runebot"
 
@@ -48,7 +48,7 @@ tasks.register<Jar>("release") {
 }
 
 tasks.register("buildJars") {
-    dependsOn("clean", "debug", "release")
+    dependsOn("clean", "debug", "release", "version")
 }
 tasks.register("version") {
 // return the version, so can be used in github actions
