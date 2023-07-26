@@ -41,15 +41,14 @@ jobs:
          name: build-artifacts
          path: build/libs/
 
-
-    create-git-tag:
+  create-git-tag:
       needs: build
       if: ${{ success() }}
       runs-on: ubuntu-latest
       steps:
         -name: get version from previous step
         id: version
-        run : echo outputs.version.name
+        run : echo ${{outputs.version.name}}
 
   create-tag:
     needs: build
