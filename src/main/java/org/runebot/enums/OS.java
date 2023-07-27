@@ -1,6 +1,5 @@
 package org.runebot.enums;
 
-import java.io.File;
 
 /**
  * An enumeration representing different Operating Systems (OS) and their specific paths.
@@ -42,7 +41,7 @@ public enum OS {
      * @param commonPaths  Array of common paths for the runelite executable.
      * @param installPaths Array of common paths for the .runelite folder.
      */
-    private OS(String value, String[] commonPaths, String[] installPaths) {
+    OS(String value, String[] commonPaths, String[] installPaths) {
         this.value = value;
         this.commonPaths = commonPaths;
         this.installPaths = installPaths;
@@ -101,4 +100,5 @@ public enum OS {
         }
         throw new IllegalArgumentException("Invalid OS value: " + key);
     }
+
 }
