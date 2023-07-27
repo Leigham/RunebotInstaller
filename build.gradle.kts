@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-val versionArr = intArrayOf(0,13,16)
+val versionArr = intArrayOf(0,14,0)
 version = 'v' + versionArr.joinToString(".")
 group = "org.runebot"
 
