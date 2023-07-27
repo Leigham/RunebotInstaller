@@ -2,7 +2,9 @@ package org.runebot;
 
 import org.jetbrains.annotations.NotNull;
 import org.runebot.enums.OS;
+import org.runebot.utilities.FileUtilities;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -31,8 +33,17 @@ public class Main {
 
 
         loadingWindow.setStatusText("Finding Runelite Executable");
-        String runelite = findRuneLiteExecutable();
-        if (runelite.equals("")) {
+        Boolean runelite = FileUtilities.checkRuneLiteExecutable();
+        if (!runelite) {
+            // error popup
+            JDialog error = new JDialog();
+            error.setTitle("Error");
+            error.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            error.setSize(300, 100);
+            error.setLocationRelativeTo(null);
+            error.setResizable(false);
+            error.setVisible(true);
+            error.add(new JLabel("Could not find RuneLite executable"));
             System.out.println("Could not find RuneLite executable");
             System.exit(1);
         }
@@ -40,9 +51,18 @@ public class Main {
         loadingWindow.setProgress(5);
         loadingWindow.setStatusText("Finding Runelite Plugin Directory");
 
-        String pluginDirectory = getRunelitePluginDirectory();
-        if (pluginDirectory.equals("")) {
-            System.out.println("Could not find RuneLite executable");
+        boolean pluginDirectory = FileUtilities.checkRuneLitePluginDirectory();
+        if (!pluginDirectory) {
+            // error popup
+            JDialog error = new JDialog();
+            error.setTitle("Error");
+            error.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            error.setSize(300, 100);
+            error.setLocationRelativeTo(null);
+            error.setResizable(false);
+            error.setVisible(true);
+            error.add(new JLabel("Could not find RuneLite plugin directory"));
+            System.out.println("Could not find RuneLite plugin directory");
             System.exit(1);
         }
 
@@ -53,63 +73,76 @@ public class Main {
         String runebotVersion = getLatestVersionString(RUNEBOT_URL);
         System.out.println("Latest RuneBot Version: " + runebotVersion);
 
-        // sideloaded plugins.
-        String sideLoadedPlugins = pluginDirectory + "\\sideloaded-plugins\\";
-        File sideLoadedPluginsDir = new File(sideLoadedPlugins);
-        if (!sideLoadedPluginsDir.exists()) {
-            sideLoadedPluginsDir.mkdir();
-        }
-        // check for any runebot plugin in the directory
-        File[] files = sideLoadedPluginsDir.listFiles();
+        File[] files = FileUtilities.getSideLoadedPluginPath().listFiles();
+
+        System.out.println("Checking for RuneBot Plugin");
+        System.out.println("Found " + files.length + " files");
+
         boolean found = false;
+        String foundVersion = null;
+
         for (File file : files) {
             if (file.getName().contains("RuneBot")) {
                 found = true;
                 System.out.println("Found RuneBot Plugin: " + file.getName());
                 String[] split = file.getName().split("-");
-                String version = split[split.length - 1].split(".jar")[0];
+                String version = split[split.length - 1].replace(".jar", "");
                 System.out.println("Found RuneBot Plugin Version: " + version);
+
                 if (!version.equals(runebotVersion)) {
                     System.out.println("Found RuneBot Plugin Version: " + version + " does not match latest version: " + runebotVersion);
                     System.out.println("Deleting old version");
                     loadingWindow.setStatusText("Runebot out of date, deleting old version");
-                    file.delete();
+                    if (file.delete()) {
+                        System.out.println("Old version deleted successfully.");
+                    } else {
+                        System.out.println("Failed to delete old version.");
+                    }
                     found = false;
+                } else {
+                    foundVersion = version;
                 }
             }
         }
+
         if (!found) {
             System.out.println("Downloading latest RuneBot Plugin");
             loadingWindow.setStatusText("Downloading latest RuneBot Plugin");
             String latestVersionURL = getLatestVersionURL(runebotVersion);
             System.out.println("Downloading from: " + latestVersionURL);
-            DownloadUtils.downloadFile(latestVersionURL, sideLoadedPlugins + "RuneBot-" + runebotVersion + ".jar", loadingWindow);
+            String downloadPath = FileUtilities.getSideLoadedPluginPath().getPath() + File.separator + "RuneBot-" + runebotVersion + ".jar";
+            DownloadUtils.downloadFile(latestVersionURL, downloadPath, loadingWindow);
+            foundVersion = runebotVersion; // Update the found version to the latest one.
         }
 
-        // finish the loading.
-        int progress = loadingWindow.currentprogress;
-        // current progress to 100 in 1 sconds very smooth
-        for (int i = progress; i <= totalProgress; i++) {
+        if (foundVersion != null) {
+            // finish the loading.
+            int progress = loadingWindow.currentprogress;
+            // current progress to 100 in 1 sconds very smooth
+            for (int i = progress; i <= totalProgress; i++) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                loadingWindow.setProgress(i);
+                loadingWindow.setStatusText("Starting RuneLite");
+            }
+
+            loadingWindow.fadeOut();
+            loadingWindow.dispose();
+
+            //start the found executable with the same args as the launcher
             try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
+                System.out.println("Starting RuneLite with args: " + Arrays.toString(args));
+                Runtime.getRuntime().exec(new String[]{FileUtilities.getExecutablePath(), Arrays.toString(args)});
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            loadingWindow.setProgress(i);
-            loadingWindow.setStatusText("Starting RuneLite");
+        } else {
+            System.out.println("Error: RuneBot Plugin not found or downloaded.");
+            System.exit(1);
         }
-
-        loadingWindow.fadeOut();
-        loadingWindow.dispose();
-
-        //start the found executable with the same args as the launcher
-        try {
-            System.out.println("Starting RuneLite with args: " + Arrays.toString(args));
-            Runtime.getRuntime().exec(new String[]{runelite, Arrays.toString(args)});
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
     private static String getLatestVersionString(String latestUrl) {
         int responseCode = 0;
@@ -134,32 +167,6 @@ public class Main {
         return String.format("https://github.com/KALE1111/rblaunch/releases/download/v%s/RuneBot-%s.jar", latestversion,latestversion);
     }
 
-    public static String findRuneLiteExecutable() {
-        String os = getOS();
-        OS osutil = OS.fromString(os);
-        for (String commonPath : osutil.getCommonPaths()) {
-            if (new File(commonPath).exists()) {
-                if (new File(commonPath).canExecute()) {
-                    System.out.println("Found RuneLite executable at: " + commonPath);
-                    return commonPath;
-                }
-            }
-        }
-        return "";
-    }
-    public static String getRunelitePluginDirectory() {
-        String os = getOS();
-        OS osutil = OS.fromString(os);
-        for (String installPath : osutil.getInstallPaths()) {
-            if (new File(installPath).exists()) {
-                if (new File(installPath).canExecute()) {
-                    System.out.println("Found RuneLite Plugins at: " + installPath);
-                    return installPath;
-                }
-            }
-        }
-        return "";
-    }
     public static @NotNull String getOS() {
         System.out.printf("OS: %s%n", System.getProperty("os.name"));
         String OS = System.getProperty("os.name").toLowerCase();

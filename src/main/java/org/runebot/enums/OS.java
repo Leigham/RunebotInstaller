@@ -85,8 +85,17 @@ public enum OS {
      * @throws IllegalArgumentException If the input string does not match any of the OS enum values.
      */
     public static OS fromString(String key) {
+        System.out.println("fromString called");
+        System.out.println("key: " + key);
         for (OS os : OS.values()) {
-            if (os.getValue().equals(key)) {
+            System.out.println("os.getValue(): " + os.getValue());
+            if (os.getValue().equals(key) ||
+                    key.toLowerCase().contains(os.getValue().toLowerCase()) ||
+                    os.name().equalsIgnoreCase(key) ||
+                    os.name().toLowerCase().contains(key.toLowerCase()) ||
+                    os.name().toLowerCase().startsWith(key.toLowerCase()) ||
+                    os.name().toLowerCase().endsWith(key.toLowerCase())
+            ) {
                 return os;
             }
         }
