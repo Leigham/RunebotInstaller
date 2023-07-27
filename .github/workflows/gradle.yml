@@ -57,9 +57,6 @@ jobs:
           uses: actions/download-artifact@v3
           with:
             name: build-artifacts
-            path: |
-              build/libs/
-              gradle_build_output.txt
 
         - name: Read version from file
           id: version
