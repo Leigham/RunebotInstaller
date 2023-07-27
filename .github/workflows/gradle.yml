@@ -104,11 +104,11 @@ jobs:
           DISCORD_USERNAME: 'Runebot'
           DISCORD_EMBEDS: '[    { 
           "author": {  
-            "icon_url": "https://cdn.discordapp.com/attachments/971169239127965726/1123095576372838561/rbactual.gif",
-            "name": "Runebot",
+            "icon_url": "https://avatars.githubusercontent.com/${{ github.actor }}",
+            "name": "${{ github.actor }}",
+            "url": "https://github.com/${{github.actor}}"
           },
-          "thumbnail": "https://cdn.discordapp.com/attachments/971169239127965726/1123095576372838561/rbactual.gif"
-          "url": "https://github.com/${{github.repository}}/releases/tag/${{ github.ref_name }}",
+          "thumbnail": "https://cdn.discordapp.com/attachments/971169239127965726/1123095576372838561/rbactual.gif",
           "title": "Runebot has been updated!",
           "url": "https://github.com/${{github.repository}}/commit/${{github.sha}}",
           "color": 16711680,
@@ -134,7 +134,7 @@ jobs:
             "name": "Runebot",
           },
           "thumbnail": "https://cdn.discordapp.com/attachments/971169239127965726/1123095576372838561/rbactual.gif"
-          "url": "https://github.com/${{github.repository}}/releases/tag/${{ github.ref_name }}",
+          "url": "https://github.com/${{github.repository}}/releases/tag/${{ steps.tag.outputs.new_tag }}",
           "fields": [
             { "name": "Repository", "value": "[${{github.event.repository.name}}](${{github.event.repository.clone_url}})", "inline": true },
             { "name": "Branch", "value": "[${{github.ref_name}}](https://github.com/${{github.repository}}/tree/${{github.ref_name}})", "inline": true },
