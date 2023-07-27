@@ -75,7 +75,7 @@ jobs:
 
         - name: Bump version and push tag
           id: tag
-          uses: anothrNick/github-tag-action@1.64.0
+          uses: anothrNick/github-tag-action@1.67.0
           env:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
             WITH_V: true
@@ -83,72 +83,10 @@ jobs:
 
         - name : output the tag
           run: echo "tag=${{ steps.tag.outputs.new_tag }}" >> $GITHUB_OUTPUT
-  create-tag:
-    needs: build
-    if: ${{ success() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: build-artifacts
-          path: build/libs/
-      - name: Download logs
-        uses: actions/download-artifact@v2
-        with:
-            name: logs
-            path: gradle_build_output.txt
 
-
-      - name: list the current directory
-        run: ls -R
-
-      - name: Check if build/libs exists
-        run: |
-          if [ -d "./build/libs" ]; then
-            ls -R ./build/libs
-          else
-            echo "Directory 'build/libs' not found."
-            exit 1
-          fi
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          # we want build/libs/*.* to be released and the logs file
-          files: |
-            build/libs/*
-            gradle_build_output.txt
-          tag_name: ${{ steps.tag.outputs.tag }}
-      - uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          status: ${{ job.status }}
-          title: "version ${{ steps.tag.outputs.tag }}"
-          description: "Runebot has been updated!"
-          image: 'https://cdn.discordapp.com/attachments/971169239127965726/1123095605271613511/sheepbanner.gif'
-          color: 0x0000ff
-          content: "Runebot has been updated!"
-          url: "https://github.com/Leigham/RunebotInstaller/releases/latest"
-          username: "Runebot Releases"
-          avatar_url: 'https://cdn.discordapp.com/attachments/971169239127965726/1123095576372838561/rbactual.gif'
-
-  error :
-    runs-on: ubuntu-latest
-    if: ${{ failure() }}
-    steps:
-      -
-        name: output the error
-        run: echo "Error"
-
-  #we only want to run sucess if the workflow is sucessful
-  success:
-    needs: build
-    runs-on: ubuntu-latest
-    if: ${{ success() }}
-    steps:
-      -
-        name: output the success
-        run: echo "Success"
+        - name: Release
+          uses: softprops/action-gh-release@v1
+          with:
+            files: |
+              build/libs/*
+            tag_name: ${{ steps.tag.outputs.new_tag }}
