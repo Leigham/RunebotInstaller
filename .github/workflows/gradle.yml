@@ -10,45 +10,7 @@ permissions:
 
 
 jobs:
-  test-mac :
-    runs-on: macos-latest-xl
-    steps:
-      -
-        name: Checkout code
-        uses: actions/checkout@v3
-      -
-        name: Output OS version
-        run: echo "OS=$OSTYPE" >> $GITHUB_OUTPUT
-
-  test-windows :
-    runs-on: windows-latest
-    needs:
-      - test-mac
-    steps:
-      -
-        name: Checkout code
-        uses: actions/checkout@v3
-      -
-        name: Output OS version
-        run: echo "OS=$OSTYPE" >> $GITHUB_OUTPUT
-
-  test-linux:
-    needs:
-      - test-windows
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Output OS version
-        run: echo "OS=$OSTYPE" >> $GITHUB_OUTPUT
-
-      - name: exit job
-        run: exit 1
   build:
-    needs:
-        - test-linux
-        - test-windows
-        - test-mac
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
