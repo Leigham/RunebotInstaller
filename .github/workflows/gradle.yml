@@ -102,20 +102,18 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_AVATAR: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
           DISCORD_USERNAME: 'Runebot'
-          DISCORD_EMBEDS: '[
-            {
-              "author": {
-                "icon_url": "https://avatars.githubusercontent.com/runebot",
-                "name": "Runebot",
-                "url": "https://github.com/runebot"
-              },
-              "title": "Runebot has been updated!",
-              "image" : "https://cdn.discordapp.com/attachments/971169239127965726/1123095605271613511/sheepbanner.gif"
-              "url": "https://github.com/runebot/releases/tag/${{ steps.tag.outputs.new_tag }}"
-              "color": 16711680,
-              "timestamp": true,
-            }
-          ]'
+          DISCORD_EMBEDS: '[    { 
+          "author": {  
+            "icon_url": "https://avatars.githubusercontent.com/${{ github.actor }}",
+            "name": "${{ github.actor }}",
+            "url": "https://github.com/${{github.actor}}"
+          },
+          "title": "Runebot has been updated!",
+          "url": "https://github.com/${{github.repository}}/commit/${{github.sha}}",
+          "color": 16711680,
+          "timestamp": "${{github.event.head_commit.timestamp}}",
+          "footer":{"text": "${{github.event.head_commit.timestamp}}"}
+          }    ]'
   release-failure :
     needs: release
     if: ${{ failure() }}
