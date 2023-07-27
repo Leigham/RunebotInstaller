@@ -113,7 +113,7 @@ jobs:
           { "name": "Changed Files", "value": "${{ steps.changed-files.outputs.all_changed_files }}" },
           { "name": "Author", "value": "[${{github.event.head_commit.author.name}}](https://github.com/${{github.actor}})" }
           ],
-          "color":1127128,
+          "color": 2159382,
           "timestamp": "${{github.event.head_commit.timestamp}}",
           "footer":{"text": "${{github.event.head_commit.timestamp}}"}
           }    ]'
@@ -140,7 +140,7 @@ jobs:
           { "name": "Changed Files", "value": "${{ steps.changed-files.outputs.all_changed_files }}" },
           { "name": "Author", "value": "[${{github.event.head_commit.author.name}}](https://github.com/${{github.actor}})" }
           ],
-          "color":1127128,
+          "color": 16711680,
           "timestamp": "${{github.event.head_commit.timestamp}}",
           "footer":{"text": "${{github.event.head_commit.timestamp}}"}
           }    ]'
@@ -167,7 +167,7 @@ jobs:
           { "name": "Changed Files", "value": "${{ steps.changed-files.outputs.all_changed_files }}" },
           { "name": "Author", "value": "[${{github.event.head_commit.author.name}}](https://github.com/${{github.actor}})" }
           ],
-          "color":1127128,
+          "color": 16711680,
           "timestamp": "${{github.event.head_commit.timestamp}}",
           "footer":{"text": "${{github.event.head_commit.timestamp}}"}
           }    ]'
