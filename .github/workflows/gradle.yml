@@ -41,7 +41,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
          name: build-artifacts
-         path: build/libs/
+         path: |
+          build/libs/
+          gradle_build_output.txt
 
   create-git-tag:
       needs: build
@@ -55,7 +57,9 @@ jobs:
           uses: actions/download-artifact@v3
           with:
             name: build-artifacts
-            path: build/libs
+            path: |
+              build/libs/
+              gradle_build_output.txt
 
         - name: Read version from file
           id: version
