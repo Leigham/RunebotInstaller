@@ -45,7 +45,7 @@ jobs:
           build/libs/
           gradle_build_output.txt
 
-  create-git-tag:
+  release:
       needs: build
       if: ${{ success() }}
       runs-on: ubuntu-latest
@@ -90,3 +90,65 @@ jobs:
             files: |
               build/libs/*
             tag_name: ${{ steps.tag.outputs.new_tag }}
+  release-success :
+    needs: release
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
+        # send a discord embed
+      - name: Send Discord Embed
+        uses: Ilshidur/action-discord@v2.1.0
+        with:
+            webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+            content: "Build successful"
+            embeds: |
+              [
+                  {
+                      "title": "Build successful",
+                      "description": "Build successful for ${{ github.repository }}",
+                      "color": 65280,
+                      "fields": [
+                      {
+                          "name": "Commit",
+                          "value": "$GITHUB_SHA",
+                          "inline": true
+                      },
+                      {
+                          "name": "Branch",
+                          "value": "$GITHUB_REF",
+                          "inline": true
+                      }
+                      ]
+                  }
+              ]
+  build-failed :
+    needs: build
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      # send a discord embed
+        - name: Send Discord Embed
+          uses: Ilshidur/action-discord@v2.1.0
+          with:
+            webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+            content: "Build failed"
+            embeds: |
+              [
+                {
+                    "title": "Build failed",
+                    "description": "Build failed for ${{ github.repository }}",
+                    "color": 16711680,
+                    "fields": [
+                      {
+                          "name": "Commit",
+                          "value": "$GITHUB_SHA",
+                          "inline": true
+                      },
+                      {
+                          "name": "Branch",
+                          "value": "$GITHUB_REF",
+                          "inline": true
+                      }
+                    ]
+                }
+              ]
