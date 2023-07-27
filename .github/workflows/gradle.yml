@@ -100,58 +100,58 @@ jobs:
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_EMBEDS: | 
-              ${{ toJson([
-              {
-                  "title": "Build failed",
-                  "description": "Build failed for ${{ github.repository }}",
-                  "color": 16711680,
-                  "fields": [
-                    {
-                      "name": "Commit",
-                      "value": "$GITHUB_SHA",
-                      "inline": true
-                    },
-                    {
-                      "name": "Branch",
-                      "value": "$GITHUB_REF",
-                      "inline": true
-                    }
-                  ]
-                }
-              ]
-            ])}}
+          DISCORD_EMBEDS: |
+            ${{ toJson([
+            {
+                "title": "Build failed",
+                "description": "Build failed for ${{ github.repository }}",
+                "color": 16711680,
+                "fields": [
+                  {
+                    "name": "Commit",
+                    "value": "${{ env.GITHUB_SHA }}",  # Corrected syntax
+                    "inline": true
+                  },
+                  {
+                    "name": "Branch",
+                    "value": "${{ env.GITHUB_REF }}",  # Corrected syntax
+                    "inline": true
+                  }
+                ]
+              }
+            ]
+            )}}
   release-failure :
     needs: release
     if: ${{ failure() }}
     runs-on: ubuntu-latest
     steps:
-    # send a discord embed
-    - name: Send Discord Embed
-      uses: Ilshidur/action-discord@master
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        DISCORD_EMBEDS: |
-          ${{ toJson([
-          {
-              "title": "Build failed",
-              "description": "Build failed for ${{ github.repository }}",
-              "color": 16711680,
-              "fields": [
-                {
-                  "name": "Commit",
-                  "value": "$GITHUB_SHA",
-                  "inline": true
-                },
-                {
-                  "name": "Branch",
-                  "value": "$GITHUB_REF",
-                  "inline": true
-                }
-              ]
-            }
-          ]
-          ])}}
+      # send a discord embed
+      - name: Send Discord Embed
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_EMBEDS: |
+            ${{ toJson([
+            {
+                "title": "Build failed",
+                "description": "Build failed for ${{ github.repository }}",
+                "color": 16711680,
+                "fields": [
+                  {
+                    "name": "Commit",
+                    "value": "${{ env.GITHUB_SHA }}",  # Corrected syntax
+                    "inline": true
+                  },
+                  {
+                    "name": "Branch",
+                    "value": "${{ env.GITHUB_REF }}",  # Corrected syntax
+                    "inline": true
+                  }
+                ]
+              }
+            ]
+            )}}
   build-failed :
     needs: build
     if: ${{ failure() }}
@@ -171,15 +171,15 @@ jobs:
                 "fields": [
                   {
                     "name": "Commit",
-                    "value": "$GITHUB_SHA",
+                    "value": "${{ env.GITHUB_SHA }}",  # Corrected syntax
                     "inline": true
                   },
                   {
                     "name": "Branch",
-                    "value": "$GITHUB_REF",
+                    "value": "${{ env.GITHUB_REF }}",  # Corrected syntax
                     "inline": true
                   }
                 ]
               }
             ]
-            ])}}
+            )}}
