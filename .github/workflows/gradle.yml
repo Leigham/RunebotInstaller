@@ -97,7 +97,7 @@ jobs:
     steps:
         # send a discord embed
       - name: Send Discord Embed
-        uses: Ilshidur/action-discord@v2.1.0
+        uses: Ilshidur/action-discord@master
         with:
             webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
             content: "Build successful"
@@ -128,7 +128,7 @@ jobs:
     steps:
       # send a discord embed
       - name: Send Discord Embed
-        uses: Ilshidur/action-discord@v2.1.0
+        uses: Ilshidur/action-discord@master
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           content: "Release failed"
@@ -159,7 +159,7 @@ jobs:
     steps:
       # send a discord embed
         - name: Send Discord Embed
-          uses: Ilshidur/action-discord@v2.1.0
+          uses: Ilshidur/action-discord@master
           with:
             webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
             content: "Build failed"
