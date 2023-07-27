@@ -21,7 +21,9 @@ jobs:
         run: echo "OS=$OSTYPE" >> $GITHUB_OUTPUT
 
   test-windows :
-    runs-on: macos-latest-xl
+    runs-on: windows-latest
+    needs:
+      - test-mac
     steps:
       -
         name: Checkout code
@@ -31,7 +33,9 @@ jobs:
         run: echo "OS=$OSTYPE" >> $GITHUB_OUTPUT
 
   test-linux:
-    runs-on: macos-latest-xl
+    needs:
+      - test-windows
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -41,6 +45,10 @@ jobs:
       - name: exit job
         run: exit 1
   build:
+    needs:
+        - test-linux
+        - test-windows
+        - test-mac
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
