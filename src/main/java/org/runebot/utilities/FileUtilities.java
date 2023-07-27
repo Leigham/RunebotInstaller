@@ -1,7 +1,5 @@
 package org.runebot.utilities;
 
-import org.runebot.enums.OS;
-
 import java.io.File;
 
 public class FileUtilities {
@@ -39,7 +37,6 @@ public class FileUtilities {
         if (!SideLoadedPath.exists()) {
             SideLoadedPath.mkdir();
         }
-
         return SideLoadedPath.exists();
     };
 
@@ -48,4 +45,14 @@ public class FileUtilities {
         File SideLoadedPath = new File(runelitePluginDirectory.getAbsolutePath() + "\\sideloaded-plugins");
         return SideLoadedPath;
     };
+
+    public static void setExecutablePath(String rlpath) {
+        File runeliteExecutable = new File(rlpath);
+        if (runeliteExecutable.exists() && runeliteExecutable.canExecute()) {
+            System.out.println("Setting executable path to " + rlpath);
+            System.setProperty("rlpath", rlpath);
+        } else {
+            System.out.println("Could not set executable path to " + rlpath);
+        }
+    }
 }

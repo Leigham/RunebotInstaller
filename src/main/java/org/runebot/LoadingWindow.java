@@ -1,5 +1,7 @@
 package org.runebot;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicProgressBarUI;
@@ -15,13 +17,24 @@ import java.util.Objects;
 public class LoadingWindow extends JFrame {
     private final JProgressBar progressBar;
     private final int fadeDuration = 1000;
-    public  int currentprogress = 100;
-    public LoadingWindow() throws NullPointerException {
+    public int currentprogress = 100;
+    private JTextArea consoleTextArea; // New component for the console
+
+    public LoadingWindow(boolean debug) throws NullPointerException {
+        // Set the FlatDarkLaf look and feel for a dark theme
+        FlatDarkLaf.setup();
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         setUndecorated(true);
         setTitle("Loading...");
         setLocationRelativeTo(null);
         setResizable(false);
         setLayout(new BorderLayout());
+        setBackground(Color.BLACK);
 
         BufferedImage originalImage = null;
         try {
@@ -39,15 +52,37 @@ public class LoadingWindow extends JFrame {
         // Update the ImageIcon with the new scaled Image
         ImageIcon scaledIcon = new ImageIcon(scaledImage);
         JLabel logoLabel = new JLabel(scaledIcon, JLabel.CENTER);
-
         add(logoLabel, BorderLayout.NORTH);
 
-        // Progress Bar
+        if (debug) {
+            consoleTextArea = new JTextArea();
+            consoleTextArea.setBackground(Color.BLACK);
+            consoleTextArea.setForeground(Color.decode("#96be25"));
+            consoleTextArea.setEditable(false);
+            consoleTextArea.setLineWrap(true); // Wrap lines to fit the width
+
+            // Set the preferred width of the console text area to match the image's width, with 90% of its width
+            int consoleWidth = (int) (newWidth * 0.9);
+            consoleTextArea.setPreferredSize(new Dimension(consoleWidth, newHeight));
+
+            JPanel consolePanel = new JPanel(new BorderLayout());
+            consolePanel.setBackground(Color.BLACK);
+            consolePanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10)); // Add padding (top, left, bottom, right)
+            consolePanel.add(consoleTextArea);
+
+            JScrollPane scrollPane = new JScrollPane(consolePanel);
+            scrollPane.setBorder(BorderFactory.createEmptyBorder());
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setPreferredSize(new Dimension(newWidth, newHeight / 2)); // Set the preferred size of the scroll pane
+            add(scrollPane, BorderLayout.CENTER); // Place the scroll pane at the center of the main panel
+        }
+
         progressBar = new JProgressBar(0, 100);
         progressBar.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         progressBar.setBackground(Color.BLACK);
         progressBar.setForeground(Color.decode("#96be25"));
-        add(progressBar, BorderLayout.CENTER);
+        add(progressBar, BorderLayout.SOUTH); // Place the progress bar at the bottom of the main panel
+
         // Set the initial window opacity to 0 (fully transparent)
         setOpacity(0.0f);
 
@@ -61,12 +96,10 @@ public class LoadingWindow extends JFrame {
                 super.windowClosing(e);
             }
         });
+
         pack();
         setLocationRelativeTo(null);
-        // Custom UI class to change the progress bar text color
-
     }
-
 
     public void fadeIn() {
         Timer fadeInTimer = new Timer(fadeDuration / 10, new ActionListener() {
@@ -88,7 +121,6 @@ public class LoadingWindow extends JFrame {
         setVisible(true);
     }
 
-    // Method to fade out the loading window
     public void fadeOut() {
         Timer fadeOutTimer = new Timer(fadeDuration / 10, new ActionListener() {
             private float opacity = 1.0f;
@@ -109,7 +141,6 @@ public class LoadingWindow extends JFrame {
         fadeOutTimer.start();
     }
 
-    // Override the setOpacity method to support transparency
     @Override
     public void setOpacity(float opacity) {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -122,19 +153,18 @@ public class LoadingWindow extends JFrame {
     private static class CustomProgressBarUI extends BasicProgressBarUI {
         @Override
         protected Color getSelectionBackground() {
-            return Color.WHITE; // Set the desired text color here
+            return Color.decode("#96be25"); // Set the desired text color here
         }
 
         @Override
         protected Color getSelectionForeground() {
-            return Color.WHITE; // Set the desired text color here
+            return Color.BLACK; // Set the desired text color here
         }
     }
+
     public void showLoadingWindow() {
         setVisible(true);
     }
-
-
 
     public void setProgress(int progress) {
         this.currentprogress = progress;
@@ -146,4 +176,12 @@ public class LoadingWindow extends JFrame {
         progressBar.setString(status);
     }
 
+    public void debugPrintln(String message) {
+        System.out.println("message");
+        System.out.println(message);
+        if (consoleTextArea != null) {
+            consoleTextArea.append(message + "\n");
+            consoleTextArea.setCaretPosition(consoleTextArea.getDocument().getLength());
+        }
+    }
 }

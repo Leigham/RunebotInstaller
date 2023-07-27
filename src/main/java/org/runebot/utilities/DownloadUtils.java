@@ -1,4 +1,6 @@
-package org.runebot;
+package org.runebot.utilities;
+import org.runebot.LoadingWindow;
+
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;

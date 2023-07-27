@@ -1,4 +1,4 @@
-package org.runebot.enums;
+package org.runebot.utilities;
 
 
 /**
@@ -21,14 +21,20 @@ public enum OS {
      * - Common paths of the runelite executable: {@code "/path/to/common2"}
      * - Common paths of the .runelite folder: {@code "/path/to/install2"}
      */
-    LINUX("linux", new String[]{"/path/to/common2"}, new String[]{"/path/to/install2"}),
+    LINUX("linux", new String[]{"/path/to/common2"}, new String[]{
+            System.getProperty("user.home")+ ".runelite"
+    }),
 
     /**
      * MacOS (OSX).
      * - Common paths of the runelite executable: {@code "/path"}
      * - Common paths of the .runelite folder: {@code "/path/to/install3"}
      */
-    OSX("osx", new String[]{"/path"}, new String[]{"/path/to/install3"});
+    OSX("osx", new String[]{
+            "/Applications/RuneLite.app/Contents/MacOS/RuneLite"
+    }, new String[]{
+            System.getProperty("user.home")+ ".runelite"
+    });
 
     private final String value;
     private final String[] commonPaths;

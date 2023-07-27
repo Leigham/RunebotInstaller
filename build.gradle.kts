@@ -2,7 +2,7 @@ plugins {
     id("java")
 }
 
-val versionArr = intArrayOf(0,15,2)
+val versionArr = intArrayOf(0,16,0)
 version = 'v' + versionArr.joinToString(".")
 group = "org.runebot"
 
@@ -12,6 +12,8 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains:annotations:24.0.0")
+    implementation("net.sf.jopt-simple:jopt-simple:6.0-alpha-3")
+    implementation("com.formdev:flatlaf:3.0")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
