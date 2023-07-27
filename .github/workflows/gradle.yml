@@ -121,6 +121,37 @@ jobs:
                       ]
                   }
               ]
+  release-failure :
+    needs: release
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      # send a discord embed
+      - name: Send Discord Embed
+        uses: Ilshidur/action-discord@v2.1.0
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          content: "Release failed"
+          embeds: |
+            [
+              {
+                  "title": "Release failed",
+                  "description": "Release failed for ${{ github.repository }}",
+                  "color": 16711680,
+                  "fields": [
+                    {
+                        "name": "Commit",
+                        "value": "$GITHUB_SHA",
+                        "inline": true
+                    },
+                    {
+                        "name": "Branch",
+                        "value": "$GITHUB_REF",
+                        "inline": true
+                    }
+                  ]
+              }
+            ]
   build-failed :
     needs: build
     if: ${{ failure() }}
